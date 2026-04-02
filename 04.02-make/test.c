@@ -1,18 +1,14 @@
-/* NOTE: In computer science, there is very little penalty to simply trying
- *       something to see if or how it works. We should get into the habit of
- *       testing something any time we learn something new. */
+/* NOTE: In computer science, there is often very little penalty to simply
+ *       trying something to make sure that it behaves the way we expect it
+ *       to; we should get in the habit of trying things early and often. */
 
 #include <stdio.h>
 
+/* NOTE: The function "main" is the entry point; its arguments are the command
+ *       line arguments -- or "void" if unused -- and its return value is an
+ *       exit status where "0" indicates that no errors occurred. */
 int main(void) {
-    /* NOTE: The function "main" is the entry point. Its arguments are the
-     *       command line arguments, which we can declare as "void" if we need
-     *       to assure the compiler that we're not going to use them. */
-
     printf("Hello, world!\n");
 
-
-    /* NOTE: This return value is an exit status, where by convention returning
-     *       0 indicates that no errors occurred. */
     return 0;
 }
