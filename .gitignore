@@ -1,0 +1,14 @@
+.DS_Store
+*.icloud
+*.swp
+*.o
+*.a
+*.dSYM
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.cpt
