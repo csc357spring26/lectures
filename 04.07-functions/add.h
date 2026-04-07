@@ -1,4 +1,4 @@
-/* NOTE: This declares the existence of a function named "add" that takes two
- *       integers and returns an integer. That is the bare minimum information
- *       the compiler needs in order to call the function. */
+/* NOTE: In order to call a function, the compiler must know its prototype: its
+ *       name, parameter types, and return type. Either the prototype or the
+ *       function definition must precede any applications. */
 int add(int, int);
