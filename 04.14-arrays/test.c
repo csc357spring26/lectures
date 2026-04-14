@@ -24,9 +24,12 @@ void h(int *mat, int width) {
 
 int main(void) {
     int arr[] = {1, 2, 3, 4};
-    int r0[] = {1, 2}, r1[] = {3, 4};
+    int row0[] = {1, 2}, row1[] = {3, 4};
     int *mat1[2];
     int mat2[][2] = {{1, 2}, {3, 4}};
+
+    mat1[0] = row0;
+    mat1[1] = row1;
 
     reverse(arr, 4);
 
@@ -35,9 +38,6 @@ int main(void) {
     printf(" |- %p: %d\n", (void *)&arr[1], arr[1]);
     printf(" |- %p: %d\n", (void *)&arr[2], arr[2]);
     printf(" +- %p: %d\n", (void *)&arr[3], arr[3]);
-
-    mat1[0] = r0;
-    mat1[1] = r1;
 
     f(mat1);
 
