@@ -18,6 +18,11 @@ int main(void) {
     printf(" |- %p: %d\n", (void *)&tmp[2], tmp[2]);
     printf(" +- %p: %d\n", (void *)&tmp[3], tmp[3]);
 
+    /* NOTE: We the programmers uniquely know what problem our program is
+     *       trying to solve, what our data represents, and therefore when
+     *       we no longer need our memory. */
+    free(tmp);
+
     return 0;
 }
 
