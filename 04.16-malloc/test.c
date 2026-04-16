@@ -22,6 +22,12 @@ int main(void) {
     printf(" |- %p: %d\n", (void *)&tmp[2], tmp[2]);
     printf(" +- %p: %d\n", (void *)&tmp[3], tmp[3]);
 
+    /* NOTE: We the programmers uniquely know what our data represents and
+     *       thus when we no longer need it. If we allocate data dynamically,
+     *       then it is our responsibility to deallocate that data once it is
+     *       no longer needed, so as to avoid any memory leaks. */
+    free(tmp);
+
     return 0;
 }
 
