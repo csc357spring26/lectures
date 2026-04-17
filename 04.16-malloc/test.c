@@ -2,12 +2,8 @@
 #include <stdio.h>
 #include "ops.h"
 
-/* NOTE: A function pointer must be declared as pointing a function of a
- *       particular type signature, so that the compiler knows what should
- *       happen when it's dereferenced. Note the only scenario in which it makes
- *       sense to dereference a function pointer is to call the function. */
 int reduce(int[], int, int (*)(int, int));
-int *map(int [], int, int (*)(int));
+int *map(int[], int, int (*)(int));
 
 int main(void) {
     int arr[] = {1, 2, 3, 4}, *tmp;
@@ -22,21 +18,23 @@ int main(void) {
     printf(" |- %p: %d\n", (void *)&tmp[2], tmp[2]);
     printf(" +- %p: %d\n", (void *)&tmp[3], tmp[3]);
 
-    /* NOTE: We the programmers uniquely know what our data represents and
-     *       thus when we no longer need it. If we allocate data dynamically,
-     *       then it is our responsibility to deallocate that data once it is
-     *       no longer needed, so as to avoid any memory leaks. */
+    /* NOTE: We the programmers uniquely know what problem our program is
+     *       solving, what our data represents and thus when we no longer need
+     *       our memory. If we allocate data dynamically, then it is our
+     *       responsibility to deallocate it and avoid any memory leaks. */
+
     free(tmp);
 
     return 0;
 }
 
-/* NOTE: By having this function take as argument a pointer to another function
- *       that combines the individual elements of the array, we can use the
- *       same logic to perform different operations by passing pointers to
- *       different functions. */
 int reduce(int arr[], int n, int (*ptr)(int, int)) {
     int val = arr[0], i;
+
+    /* NOTE: By taking as argument a pointer to a function containing the
+     *       operation(s) to be performed inside this loop, this function can
+     *       do different things simply by taking pointers to different
+     *       functions as argument. */
 
     for (i = 1; i < n; i++) {
         val = ptr(val, arr[i]);
@@ -45,12 +43,13 @@ int reduce(int arr[], int n, int (*ptr)(int, int)) {
     return val;
 }
 
-/* NOTE: Since a reference to an array is the address of its first element, it
- *       is never safe to return an array -- we would just be returning the
- *       address of a local that is about to be deallocated. Instead, we can
- *       allocate space for the array on the heap, which will persist. */
 int *map(int arr[], int n, int (*ptr)(int)) {
     int i, *tmp;
+
+    /* NOTE: By allocating the new array on the heap rather than on the stack,
+     *       it will persist even after this function returns. Since array and
+     *       pointer syntax is interchangeable, the compiler lets us pretend
+     *       that a pointer to the heap is actually an array. */
 
     tmp = (int *)malloc(sizeof(int) * n);
     for (i = 0; i < n; i++) {
