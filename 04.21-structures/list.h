@@ -10,9 +10,9 @@ typedef struct Node {
 
 /* List: Represents a linked list.
  * NOTE: Just like a class in an object-oriented language, a structure defines
- *       a new type by composing related variables, its "members". Unlike a
- *       class, a structure may not contain any methods. Here, we define the
- *       new type "struct List", which is then renamed "List". */
+ *       a new type by composing related variables, its "members", which we can
+ *       treat as a single unit. Unlike a class, a structure may not contain
+ *       any methods. */
 typedef struct List {
     Node *head;
     int size;

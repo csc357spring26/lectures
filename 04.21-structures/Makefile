@@ -7,9 +7,9 @@ list.o: list.c list.h
 debug:
 	gcc -Wall -Wextra -ansi -pedantic -g -c list.c
 
-# NOTE: While we are testing and debugging, we want to make sure to run our
-#       code through Valgrind, not only to catch any leaks early on, but also
-#       to warn us of other suspicious uses of memory.
+# NOTE: While we are periodically testing and iteratively developing, we should
+#       make sure to run our tests through Valgrind, so as to catch any leaks
+#       or other misuses of memory early on.
 test: debug
 	gcc -Wall -Wextra -ansi -pedantic -g listtests.c list.o
 	valgrind --leak-check=full --show-leak-kinds=all ./a.out

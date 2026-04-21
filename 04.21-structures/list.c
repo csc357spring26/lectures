@@ -22,11 +22,12 @@ List *lstcreate(void) {
 
 /* lstdestroy: Destroys an existing linked list. */
 void lstdestroy(List *lst) {
-    /* NOTE: The List is the only way to access the Nodes -- once we free the
-     *       List, we will have no way of accessing the Nodes inside. Before
-     *       we lose access, we need to free each and every Node individually.
-     *       In general, we can't access a member after freeing its struct. */
     Node *node = lst->head;
+
+    /* NOTE: Once we free memory, its contents are effectively random -- they
+     *       can be reused for future allocations. We might get lucky, and the
+     *       data we need might still happen to be there, but in general we
+     *       cannot access members after freeing their struct. */
 
     while (node != NULL) {
         Node *tmp = node->next;
@@ -35,9 +36,10 @@ void lstdestroy(List *lst) {
     }
 
     /* NOTE: This only frees the List structure; it does not free any of the
-     *       Nodes inside. The compiler has no way of knowing that the List
-     *       is the only way to access the Nodes, and thus being done with the
-     *       List implies being doing with the Nodes. */
+     *       Nodes inside. The compiler does not know what a "linked list" is;
+     *       it has no way of knowing that being done with the List implies
+     *       being doing with the Nodes. */
+
     free(lst);
 }
 
@@ -79,6 +81,7 @@ int lstadd(List *lst, int idx, void *val) {
      *       we were given; we don't need to return a new List. Rather, this
      *       return value is an error code; if, for example, "idx" were out-of-
      *       bounds, we could return non-zero to indicate an error. */
+
     return 0;
 }
 
