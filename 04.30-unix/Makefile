@@ -1,6 +1,7 @@
-# NOTE: As programmers who now supposedly know what we are doing, we have
-#       earned the right to drop the -Werror flag and switch to the latest
-#       supported C standard with all the extra features.
+# NOTE: Now that we are experienced C programmers who supposedly know what we
+#       are doing, we still want to see warnings, but we have earned the right
+#       to stop treating warnings as errors and to switch to the latest
+#       supported version of the C standard with all the extra features.
 CFLAGS = -Wall -Wextra -std=gnu11 -pedantic
 
 all: fpack pack

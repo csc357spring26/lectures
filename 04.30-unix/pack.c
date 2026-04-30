@@ -13,25 +13,22 @@ int main(int argc, char* argv[]) {
 
     /* NOTE: When a file is opened, an entry is created in a behind-the-scenes
      *       "file table", essentially just a big array of open files. The
-     *       system call open returns a "file descriptor", an index into the
+     *       system call "open" returns a "file descriptor", an index into the
      *       file table. */
     int src, dest, n;
 
-    /* NOTE: Standard library functions like fopen encapsulate the most common
-     *       functionality. For example, fopen always truncates a file opened
-     *       for writing, and always applies the default permissions. If we
-     *       don't want these defaults, then we can call open directly. */
+    /* NOTE: Standard library functions like "fopen" encapsulate the most
+     *       common functionality. For example, "fopen" will always truncate an
+     *       existing file opened for writing. If we don't want those defaults,
+     *       then we can make the system call "open" directly ourselves. */
     src = open(argv[1], O_RDONLY);
-    dest = open(argv[2], O_WRONLY | O_TRUNC | O_CREAT,
+    dest = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC,
                 S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
-    /* NOTE: In UNIX, system calls are exposed as C functions, but a system
-     *       call takes longer than an ordinary function call: it must transfer
-     *       control to and from the OS. Standard library functions like fread
-     *       don't avoid calling read, but they will read in more bytes than we
-     *       ask for and store the excess in a behind-the-scenes buffer in
-     *       memory, so that they can just give us data from the buffer in
-     *       future in order to limit the number of system calls. */
+    /* NOTE: System calls are exposed as though they were C functions, but they
+     *       are more expensive than ordinary function calls: they have to
+     *       securely transfer control to and from the OS, which requires far
+     *       more work than just jumping to a subroutine... */
     while ((n = read(src, buf, sizeof(char) * 8)) > 0) {
         for (; n < 8; n++) {
             buf[n] = '0';
@@ -42,13 +39,13 @@ int main(int argc, char* argv[]) {
     }
 
     /* NOTE: There are a finite number of file descriptors available -- the
-     *       file table has fixed size. If we only ever call open without ever
-     *       calling close, eventually, the operating system will deny our
-     *       requests to open additional files. */
+     *       file table has fixed size. If we only ever open files without
+     *       closing them, eventually the OS will deny requests to open any
+     *       more files. */
     close(src);
     close(dest);
 
-    return EXIT_SUCCESS;
+    return 0;
 }
 
 unsigned char stob(char *bits) {
@@ -56,7 +53,7 @@ unsigned char stob(char *bits) {
 
     for (mask = 1 << 7; mask > 0; mask >>= 1) {
         if (*(bits++) == '1') {
-            byte = byte | mask;
+            byte |= mask;
         }
     }
 

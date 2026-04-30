@@ -12,6 +12,10 @@ int main(int argc, char* argv[]) {
     src = fopen(argv[1], "r");
     dest = fopen(argv[2], "w");
 
+    /* NOTE: ...in order to minimize the number of system calls, and thus the
+     *       running time of the program, "fread" will call "read" and ask for
+     *       more bytes than it actually needs. It will save the excess bytes
+     *       for later, so that later calls to "fread" need not call "read". */
     while ((n = fread(buf, sizeof(char), 8, src)) > 0) {
         for (; n < 8; n++) {
             buf[n] = '0';
@@ -24,7 +28,7 @@ int main(int argc, char* argv[]) {
     fclose(src);
     fclose(dest);
 
-    return EXIT_SUCCESS;
+    return 0;
 }
 
 unsigned char stob(char *bits) {
