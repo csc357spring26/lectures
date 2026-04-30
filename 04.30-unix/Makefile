@@ -1,15 +1,12 @@
 CFLAGS = -Wall -Wextra -Werror -ansi -pedantic
 
-all: copy fcopy
+all: fpack
 
 debug: CFLAGS += -g
 debug: clean all
 
-copy: copy.o
-	gcc -o copy copy.o
-
-fcopy: fcopy.o
-	gcc -o fcopy fcopy.o
+fpack: fpack.o
+	gcc -o fpack fpack.o
 
 %.o: %.c
 	gcc $(CFLAGS) -c $<
