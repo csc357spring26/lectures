@@ -9,8 +9,6 @@ int main(int argc, char* argv[]) {
     FILE *src, *dest;
     int n;
 
-    (void)argc;
-
     src = fopen(argv[1], "r");
     dest = fopen(argv[2], "w");
 
@@ -34,7 +32,7 @@ unsigned char stob(char *bits) {
 
     for (mask = 1 << 7; mask > 0; mask >>= 1) {
         if (*(bits++) == '1') {
-            byte |= mask;
+            byte = byte | mask;
         }
     }
 
