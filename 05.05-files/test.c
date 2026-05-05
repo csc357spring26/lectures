@@ -5,34 +5,34 @@
 #include <stdio.h>
 #include <errno.h>
 
+/* NOTE: Since there is no exception mechanism in C, when a system call fails,
+ *       it will set the global variable "errno" to indicate the cause of the
+ *       failure -- this variable contains the reason for the last failure. */
 extern int errno;
 
 int main(int argc, char *argv[]) {
     struct stat buf;
 
     if (argc < 2) {
-        /* NOTE: In UNIX, all I/O appears to be file I/O. Every process begins
-         *       with three open "files": stdin for terminal input, stdout for
-         *       terminal output, and stderr for error messages. To display an
-         *       error message is to write to the "file" stderr. */
-        fprintf(stderr, "Too few arguments.\n");
+        /* NOTE: In UNIX, all I/O appears to be file I/O. Every process starts
+         *       with 3 open "files": stdin for terminal input, stdout for
+         *       terminal output, and stderr for error messages. */
+        fprintf(stderr, "Too few arguments\n");
         return EXIT_FAILURE;
     }
 
     if (stat(argv[1], &buf) < 0) {
-        /* NOTE: In case of failure, system calls will set the global variable
-         *       "errno" to indicate the reason for the failure. These numbers
-         *       are not standardized, but the standard library function
-         *       "perror" can be used to print a human-readable message. */
-        fprintf(stderr, "%s: %d\n", argv[1], errno);
+        /* NOTE: The values of "errno" are not standardized, but the standard
+         *       library function "perror" can be used to look up an error
+         *       number and print an appropriate message. */
+        fprintf(stderr, "Error %d\n", errno);
         perror(argv[1]);
         return EXIT_FAILURE;
     }
     else {
-        /* NOTE: Files are implemented as inodes and stored in blocks, but they
-         *       do not have names: each file is uniquely identified by its
-         *       device/inode number pair; the parent directory maps filenames
-         *       to inodes for human readability. */
+        /* NOTE: Each file is implemented as exactly one inode, which contains
+         *       a variety of metadata but *not* a filename. Files don't have
+         *       names; they are identified by device/inode numbers. */
         printf("device: %ld\n", (long)(buf.st_dev));
         printf("inode:  %ld\n", (long)(buf.st_ino));
         printf("size:   %ld\n", (long)(buf.st_size));
