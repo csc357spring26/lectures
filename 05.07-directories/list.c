@@ -18,14 +18,15 @@ int main(int argc, char *argv[]) {
 
     /* NOTE: For the sake of brevity, we'll omit any error checking from this
      *       program, but we really should be in the habit of checking the
-     *       results of any system calls and calling "perror" as needed. */
+     *       results of any system calls and printing error messages with
+     *       "perror" as needed. */
     dir = opendir(".");
 
-    /* NOTE: The order of entries within a directory is effectively random; if
-     *       we need them in any particular order, then we have to read them
-     *       all in and sort them first -- note also that calling "readdir" a
-     *       second time likely overwrites the results of the first. */
-    while ((entry = readdir(dir)) != NULL) {
+    /* NOTE: Just like reading from an ordinary file, the second time we read
+     *       from a directory, we pick up where we left off with the second
+     *       filename-to-inode mapping; note this overwrites the first, and
+     *       that the entries are in no particular order. */
+    while((entry = readdir(dir)) != NULL) {
         /* NOTE: A directory maps filenames to inodes; the only information
          *       that is guaranteed to be in a directory entry is a filename
          *       and the inode to which it is mapped. Any additional
@@ -35,6 +36,8 @@ int main(int argc, char *argv[]) {
                entry->d_name, (long)(entry->d_ino),
                (long)(buf.st_size), (long)(buf.st_blocks));
     }
+
+    closedir(dir);
 
     return EXIT_SUCCESS;
 }
