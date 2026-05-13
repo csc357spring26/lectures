@@ -10,16 +10,16 @@
 int fsearch(char *, char *);
 
 int main(int argc, char *argv[]) {
-    int i, status = EXIT_FAILURE;
+    int status = EXIT_FAILURE, i;
     pid_t child;
 
     /* NOTE: "fork" duplicates the now-parent process -- the child process will
      *       have the same contents in memory as the parent, which means the
-     *       child will be doing exactly the same thing as the parent, which
+     *       child will be executing the same instructions, which effectively
      *       means "fork" must return *twice*, both to parent and to child. */
     for (i = 2; i < argc; i++) {
         if ((child = fork()) == 0) {
-            printf("%ld is the child of %ld.\n", (long)getpid(), (long)getppid());
+            printf("%ld is a child of %ld.\n", (long)getpid(), (long)getppid());
             return fsearch(argv[i], argv[1]);
         }
         else {
@@ -27,14 +27,15 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    /* NOTE: It is the parent's responsibility to wait for each and every one
-     *       of its children, so as to clean up any resources associated with
-     *       the resulting zombies, however, we need to make sure we create all
-     *       of the children before we start waiting. */
+    /* NOTE: Parents are responsible for waiting for their children, so as to
+     *       clean up any resources associated with the resulting zombies. In
+     *       this case, however, we need to create all of the children before
+     *       we start waiting, so that they can run in parallel. */
     for (i = 2; i < argc; i++) {
         child = wait(&status);
+
         if (WIFEXITED(status)) {
-            printf("%ld exited with status %d.\n", (long)child, WEXITSTATUS(status));
+            printf("%ld exited status %d.\n", (long)child, WEXITSTATUS(status));
         }
         else {
             printf("%ld exited abnormally.\n", (long)child);
