@@ -26,7 +26,7 @@ int main(void) {
          *       data in the same order it was originally written. */
         while ((n = read(fds[0], buf, 16)) > 0) {
             buf[n] = '\0';
-            printf("Read \"%s\" from the pipe.\n", buf);
+            printf("%ld read \"%s\" from the pipe.\n", (long)getpid(), buf);
         }
 
         close(fds[0]);
@@ -54,6 +54,10 @@ int main(void) {
         else {
             printf("%ld exited abnormally.\n", (long)child);
         }
+    }
+    else {
+        perror("spork");
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;
