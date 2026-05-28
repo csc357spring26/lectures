@@ -2,12 +2,15 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
     struct addrinfo hints = {0}, *addr;
     uint32_t ipaddr;
+    int fd, n;
+    char buf[81];
 
     /* NOTE: This program, the client, will actively attempt to connect to the
      *       already-running server, which requires knowing the server's
@@ -21,14 +24,31 @@ int main(int argc, char *argv[]) {
      *       same server, so "getaddrinfo" produces a pointer to the head of a
      *       dynamically allocated linked list of addresses for us to try. For
      *       brevity, we assume that the first address always works. */
-    ipaddr = ntohl(((struct sockaddr_in *)addr->ai_addr)->sin_addr.s_addr);
+    fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+    connect(fd, addr->ai_addr, addr->ai_addrlen);
 
+    ipaddr = ntohl(((struct sockaddr_in *)addr->ai_addr)->sin_addr.s_addr);
     printf("Connected to %d.%d.%d.%d.\n",
      (ipaddr & 0xFF000000) >> 24,
      (ipaddr & 0x00FF0000) >> 16,
      (ipaddr & 0x0000FF00) >> 8,
      (ipaddr & 0x000000FF) >> 0);
 
+    /* NOTE: It is possible that the network is too busy to handle all of the
+     *       data we wish to send at the moment, in which case it is our
+     *       responsibility to try to send the rest of the data later. */
+    while ((n = read(STDIN_FILENO, buf, 80)) > 0) {
+        int i = 0;
+
+        buf[n - 1] = '\0';
+        while (i < n) {
+            i += write(fd, buf + i, n - i);
+        }
+    }
+
+    /* NOTE: Just as with pipes, closing sockets is how we indicate that we
+     *       do not intend to read or write any more data in the future. */
+    close(fd);
     freeaddrinfo(addr);
 
     return EXIT_SUCCESS;
