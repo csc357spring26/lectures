@@ -5,11 +5,13 @@
 #include <stdio.h>
 
 int main(void) {
-    int ptoc[2], ctop[2];
+    int ptoc[2], ctop[2], n;
+    char buf[81];
 
-    /* NOTE: In theory, we could just make one pipe and be very careful about
-     *       who reads and who writes and when. In practice, we typically just
-     *       make one pipe per direction in which data needs to flow. */
+    /* NOTE: In theory, if we were very careful about who read and who wrote
+     *       and when, everyone could share one pipe. In practice, we typically
+     *       just make one pipe for each direction in which data needs to
+     *       flow: in this case, one parent-to-child and one child-to-parent. */
     pipe(ptoc);
     pipe(ctop);
 
@@ -33,9 +35,6 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
     else {
-        char buf[81];
-        int n;
-
         close(ptoc[0]);
         close(ctop[1]);
 

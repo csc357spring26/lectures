@@ -16,18 +16,19 @@ int main(int argc, char *argv[]) {
     hints.ai_socktype = SOCK_STREAM;
     getaddrinfo(argv[1], argv[2], &hints, &addrs);
 
-    /* NOTE: Since the server could have multiple addresses, "getaddrinfo"
-     *       produces a linked list of multiple addrinfo structures for us to
-     *       try. */
+    /* NOTE: It is possible that multiple addresses could be used to access the
+     *       same server, so "getaddrinfo" produces a pointer to the head of a
+     *       dynamically allocated linked list of addresses for us to try. */
     addr = addrs;
     while (addr != NULL) {
-        uint32_t ipaddr = ntohl(((struct sockaddr_in *)addr->ai_addr)->sin_addr.s_addr);
+        uint32_t ipaddr = ntohl(
+         ((struct sockaddr_in *)addr->ai_addr)->sin_addr.s_addr);
 
         printf("%d.%d.%d.%d\n",
-                (ipaddr & 0xFF000000) >> 24,
-                (ipaddr & 0x00FF0000) >> 16,
-                (ipaddr & 0x0000FF00) >> 8,
-                (ipaddr & 0x000000FF) >> 0);
+         (ipaddr & 0xFF000000) >> 24,
+         (ipaddr & 0x00FF0000) >> 16,
+         (ipaddr & 0x0000FF00) >> 8,
+         (ipaddr & 0x000000FF) >> 0);
 
         addr = addr->ai_next;
     }
