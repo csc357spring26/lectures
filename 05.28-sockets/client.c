@@ -41,11 +41,14 @@ int main(int argc, char *argv[]) {
     while ((n = read(STDIN_FILENO, buf, 80)) > 0) {
         int i = 0;
 
+        buf[n - 1] = '\0';
         while (i < n) {
             i += write(fd, buf + i, n - i);
         }
     }
 
+    /* NOTE: Just as with pipes, closing sockets is how we indicate that we
+     *       do not intend to read or write any more data in the future. */
     close(fd);
     freeaddrinfo(addr);
 
