@@ -18,10 +18,10 @@ typedef struct Arg {
  *       once and which no thread can be interrupted while acquiring. */
 static pthread_mutex_t lock;
 
-/* NOTE: Like processes, threads execute concurrently with their own registers
- *       and runtime stacks. Unlike processes, threads share resources such as
- *       the data segment. By putting the "count" in global memory, all of the
- *       threads can increment it without any interprocess communication. */
+/* NOTE: Unlike processes, threads share the same text/data segment, the same
+ *       heap, and the same resources such as open files. To communicate data
+ *       from one thread to another, we can simply leave it in a global
+ *       variable that all threads can access. */
 static int count = 0;
 
 /* NOTE: This function will eventually be passed to "pthread_create"; it will
@@ -40,11 +40,12 @@ void *search(void *ptr) {
              *       and into the critical section at the same time. */
             pthread_mutex_lock(&lock);
 
-            /* NOTE: Only "lock" itself is mutually exclusive; "count" is
-             *       otherwise unprotected, and threads have to cooperatively
-             *       agree to acquire the lock before attempting to increment
-             *       the counter. */
+            /* NOTE: Only "lock" is mutually exclusive; "count" itself is still
+             *       unprotected, and the threads that use "count" have to
+             *       cooperatively agree to acquire "lock" before they enter
+             *       the critical section. */
             count++;
+
             pthread_mutex_unlock(&lock);
         }
     }
@@ -71,7 +72,7 @@ int main(int argc, char *argv[]) {
     args[0].arr = arr;
     args[0].n = n;
     args[0].x = x;
-    args[1].arr = arr + SIZE / 2;
+    args[1].arr = arr + n;
     args[1].n = n;
     args[1].x = x;
 
